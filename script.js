@@ -28,8 +28,23 @@ const products = [
     image: "images/watch.jpg"
   }
 ];
+
 const productContainer =
 document.getElementById("productContainer");
+
+const cartItems =
+document.getElementById("cartItems");
+
+const cartCount =
+document.getElementById("cartCount");
+
+const cartTotal =
+document.getElementById("cartTotal");
+
+let cart = [];
+
+/* Display Products */
+
 function displayProducts() {
 
   productContainer.innerHTML = "";
@@ -48,7 +63,7 @@ function displayProducts() {
 
         <p>₹${product.price}</p>
 
-        <button>
+        <button onclick="addToCart(${product.id})">
           Add To Cart
         </button>
 
@@ -57,4 +72,69 @@ function displayProducts() {
   });
 
 }
+
+/* Add To Cart */
+
+function addToCart(productId) {
+
+  const product =
+  products.find(item => item.id === productId);
+
+  cart.push(product);
+
+  updateCart();
+}
+
+/* Update Cart */
+
+function updateCart() {
+
+  cartItems.innerHTML = "";
+
+  let total = 0;
+
+  cart.forEach((item, index) => {
+
+    total += item.price;
+
+    cartItems.innerHTML += `
+      <li style="
+        margin-bottom:10px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+      ">
+        ${item.name} - ₹${item.price}
+
+        <button
+          onclick="removeFromCart(${index})"
+          style="
+            background:red;
+            color:white;
+            border:none;
+            padding:5px 10px;
+            border-radius:5px;
+            cursor:pointer;
+          "
+        >
+          X
+        </button>
+      </li>
+    `;
+  });
+
+  cartCount.textContent = cart.length;
+
+  cartTotal.textContent = total;
+}
+
+/* Remove From Cart */
+
+function removeFromCart(index) {
+
+  cart.splice(index, 1);
+
+  updateCart();
+}
+
 displayProducts();
