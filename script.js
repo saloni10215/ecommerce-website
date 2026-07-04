@@ -48,8 +48,7 @@ document.querySelectorAll(".category-btn");
 // =========================
 // CART
 // =========================
-
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 // =========================
 // DISPLAY PRODUCTS
@@ -146,13 +145,17 @@ categoryButtons.forEach(button => {
 // =========================
 // ADD TO CART
 // =========================
-
 function addToCart(id) {
 
     const product =
         products.find(product => product.id === id);
 
     cart.push(product);
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
 
     updateCart();
 
@@ -201,7 +204,12 @@ function updateCart() {
 
 function removeFromCart(index) {
 
-    cart.splice(index, 1);
+    cart.splice(index,1);
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
 
     updateCart();
 
@@ -212,3 +220,5 @@ function removeFromCart(index) {
 // =========================
 
 displayProducts();
+
+updateCart();
