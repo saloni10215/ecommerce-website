@@ -1,140 +1,187 @@
+// =========================
+// PRODUCTS
+// =========================
+
 const products = [
-  {
-    id: 1,
-    name: "Wireless Headphones",
-    price: 1999,
-    category: "Electronics",
-    image: "images/headphones.jpg"
-  },
-  {
-    id: 2,
-    name: "T-Shirt",
-    price: 499,
-    category: "Clothing",
-    image: "images/tshirt.jpg"
-  },
-  {
-    id: 3,
-    name: "Running Shoes",
-    price: 2499,
-    category: "Shoes",
-    image: "images/shoes.jpg"
-  },
-  {
-    id: 4,
-    name: "Smart Watch",
-    price: 3999,
-    category: "Electronics",
-    image: "images/watch.jpg"
-  }
+    {
+        id: 1,
+        name: "Wireless Headphones",
+        price: 1999,
+        category: "Electronics",
+        image: "images/headphones.jpg"
+    },
+    {
+        id: 2,
+        name: "T-Shirt",
+        price: 499,
+        category: "Clothing",
+        image: "images/tshirt.jpg"
+    },
+    {
+        id: 3,
+        name: "Running Shoes",
+        price: 2499,
+        category: "Shoes",
+        image: "images/shoes.jpg"
+    },
+    {
+        id: 4,
+        name: "Smart Watch",
+        price: 3999,
+        category: "Electronics",
+        image: "images/watch.jpg"
+    }
 ];
 
-const productContainer =
-document.getElementById("productContainer");
+// =========================
+// DOM ELEMENTS
+// =========================
 
-const cartItems =
-document.getElementById("cartItems");
+const productContainer = document.getElementById("productContainer");
+const searchInput = document.getElementById("searchInput");
 
-const cartCount =
-document.getElementById("cartCount");
+const cartItems = document.getElementById("cartItems");
+const cartCount = document.getElementById("cartCount");
+const cartTotal = document.getElementById("cartTotal");
 
-const cartTotal =
-document.getElementById("cartTotal");
+// =========================
+// CART
+// =========================
 
 let cart = [];
 
-/* Display Products */
+// =========================
+// DISPLAY PRODUCTS
+// =========================
 
-function displayProducts() {
+function displayProducts(productList = products) {
 
-  productContainer.innerHTML = "";
+    productContainer.innerHTML = "";
 
-  products.forEach(product => {
+    if (productList.length === 0) {
 
-    productContainer.innerHTML += `
-      <div class="product-card">
+        productContainer.innerHTML = `
+            <h2>No Products Found</h2>
+        `;
 
-        <img
-          src="${product.image}"
-          alt="${product.name}"
-        >
+        return;
+    }
 
-        <h3>${product.name}</h3>
+    productList.forEach(product => {
 
-        <p>₹${product.price}</p>
+        const card = document.createElement("div");
 
-        <button onclick="addToCart(${product.id})">
-          Add To Cart
-        </button>
+        card.className = "product-card";
 
-      </div>
-    `;
-  });
+        card.innerHTML = `
+            <img
+                src="${product.image}"
+                alt="${product.name}"
+            >
+
+            <h3>${product.name}</h3>
+
+            <p>₹${product.price}</p>
+
+            <button onclick="addToCart(${product.id})">
+                Add To Cart
+            </button>
+        `;
+
+        productContainer.appendChild(card);
+
+    });
 
 }
 
-/* Add To Cart */
+// =========================
+// SEARCH
+// =========================
 
-function addToCart(productId) {
+searchInput.addEventListener("keyup", () => {
 
-  const product =
-  products.find(item => item.id === productId);
+    const value =
+        searchInput.value.toLowerCase();
 
-  cart.push(product);
+    const filteredProducts =
+        products.filter(product =>
 
-  updateCart();
+            product.name
+            .toLowerCase()
+            .includes(value)
+
+        );
+
+    displayProducts(filteredProducts);
+
+});
+
+// =========================
+// ADD TO CART
+// =========================
+
+function addToCart(id) {
+
+    const product =
+        products.find(product => product.id === id);
+
+    cart.push(product);
+
+    updateCart();
+
 }
 
-/* Update Cart */
+// =========================
+// UPDATE CART
+// =========================
 
 function updateCart() {
 
-  cartItems.innerHTML = "";
+    cartItems.innerHTML = "";
 
-  let total = 0;
+    let total = 0;
 
-  cart.forEach((item, index) => {
+    cart.forEach((item, index) => {
 
-    total += item.price;
+        total += item.price;
 
-    cartItems.innerHTML += `
-      <li style="
-        margin-bottom:10px;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-      ">
-        ${item.name} - ₹${item.price}
+        const li = document.createElement("li");
 
-        <button
-          onclick="removeFromCart(${index})"
-          style="
-            background:red;
-            color:white;
-            border:none;
-            padding:5px 10px;
-            border-radius:5px;
-            cursor:pointer;
-          "
-        >
-          X
-        </button>
-      </li>
-    `;
-  });
+        li.innerHTML = `
+            <span>
+                ${item.name}<br>
+                ₹${item.price}
+            </span>
 
-  cartCount.textContent = cart.length;
+            <button onclick="removeFromCart(${index})">
+                X
+            </button>
+        `;
 
-  cartTotal.textContent = total;
+        cartItems.appendChild(li);
+
+    });
+
+    cartCount.textContent = cart.length;
+
+    cartTotal.textContent = total;
+
 }
 
-/* Remove From Cart */
+// =========================
+// REMOVE FROM CART
+// =========================
 
 function removeFromCart(index) {
 
-  cart.splice(index, 1);
+    cart.splice(index, 1);
 
-  updateCart();
+    updateCart();
+
 }
+
+// =========================
+// INITIAL LOAD
+// =========================
 
 displayProducts();
