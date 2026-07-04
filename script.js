@@ -43,7 +43,8 @@ const searchInput = document.getElementById("searchInput");
 const cartItems = document.getElementById("cartItems");
 const cartCount = document.getElementById("cartCount");
 const cartTotal = document.getElementById("cartTotal");
-
+const categoryButtons =
+document.querySelectorAll(".category-btn");
 // =========================
 // CART
 // =========================
@@ -115,7 +116,33 @@ searchInput.addEventListener("keyup", () => {
     displayProducts(filteredProducts);
 
 });
+categoryButtons.forEach(button => {
 
+    button.addEventListener("click", () => {
+
+        const category =
+        button.dataset.category;
+
+        if(category === "All"){
+
+            displayProducts(products);
+
+        }
+
+        else{
+
+            const filteredProducts =
+            products.filter(product =>
+                product.category === category
+            );
+
+            displayProducts(filteredProducts);
+
+        }
+
+    });
+
+});
 // =========================
 // ADD TO CART
 // =========================
