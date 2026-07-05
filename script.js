@@ -150,7 +150,26 @@ function addToCart(id) {
     const product =
         products.find(product => product.id === id);
 
-    cart.push(product);
+    const existingItem =
+        cart.find(item => item.id === id);
+
+    if(existingItem){
+
+        existingItem.quantity++;
+
+    }
+
+    else{
+
+        cart.push({
+
+            ...product,
+
+            quantity:1
+
+        });
+
+    }
 
     localStorage.setItem(
         "cart",
@@ -173,18 +192,31 @@ function updateCart() {
 
     cart.forEach((item, index) => {
 
-        total += item.price;
+        total += item.price * item.quantity;
 
         const li = document.createElement("li");
 
         li.innerHTML = `
-            <span>
-                ${item.name}<br>
-                ₹${item.price}
-            </span>
+            <div>
+
+                <h4>${item.name}</h4>
+
+                <p>₹${item.price}</p>
+
+                <div class="quantity">
+
+                    <button onclick="decreaseQuantity(${item.id})">-</button>
+
+                    <span>${item.quantity}</span>
+
+                    <button onclick="increaseQuantity(${item.id})">+</button>
+
+                </div>
+
+            </div>
 
             <button onclick="removeFromCart(${index})">
-                X
+                ❌
             </button>
         `;
 
@@ -192,7 +224,11 @@ function updateCart() {
 
     });
 
-    cartCount.textContent = cart.length;
+    const count = cart.reduce((total, item) => {
+        return total + item.quantity;
+    }, 0);
+
+    cartCount.textContent = count;
 
     cartTotal.textContent = total;
 
@@ -214,7 +250,47 @@ function removeFromCart(index) {
     updateCart();
 
 }
+function increaseQuantity(id){
 
+    const item =
+    cart.find(item => item.id === id);
+
+    item.quantity++;
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+
+    updateCart();
+
+}
+function decreaseQuantity(id){
+
+    const item =
+    cart.find(item => item.id === id);
+
+    if(item.quantity > 1){
+
+        item.quantity--;
+
+    }
+
+    else{
+
+        cart =
+        cart.filter(item => item.id !== id);
+
+    }
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+
+    updateCart();
+
+}
 // =========================
 // INITIAL LOAD
 // =========================
