@@ -45,6 +45,8 @@ const cartCount = document.getElementById("cartCount");
 const cartTotal = document.getElementById("cartTotal");
 const categoryButtons =
 document.querySelectorAll(".category-btn");
+const toast =
+document.getElementById("toast");
 // =========================
 // CART
 // =========================
@@ -91,6 +93,19 @@ function displayProducts(productList = products) {
         productContainer.appendChild(card);
 
     });
+
+}
+function showToast(message){
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2000);
 
 }
 
@@ -177,7 +192,7 @@ function addToCart(id) {
     );
 
     updateCart();
-
+showToast(product.name + " added to cart");
 }
 
 // =========================
